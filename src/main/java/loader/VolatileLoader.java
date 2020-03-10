@@ -9,8 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 public class VolatileLoader {
 
-    public static class VolatileVisible implements Runnable{
+    public static class VolatileVisible implements Runnable {
         volatile boolean running = true;  //对比一下有无volatile的情况下，整个程序运行结果的区别
+
         void m() {
             System.out.println("m start");
             while (running) {  //死循环。只有running=false时，才能执行后面的语句
@@ -18,6 +19,7 @@ public class VolatileLoader {
             }
             System.out.println("m end");
         }
+
         @Override
         public void run() {
             VolatileVisible vt = new VolatileVisible();
@@ -31,13 +33,15 @@ public class VolatileLoader {
         }
     }
 
-    public static class VolatileNoAtomic implements Runnable{
+    public static class VolatileNoAtomic implements Runnable {
         volatile int count = 0;
+
         void m() {
             for (int i = 0; i < 10000; i++) {
                 count++;
             }
         }
+
         @Override
         public void run() {
             VolatileNoAtomic vna = new VolatileNoAtomic();
@@ -62,12 +66,15 @@ public class VolatileLoader {
      */
     public static class MyContainerVolatile implements Runnable {
         volatile List list = new ArrayList();
+
         public void add(Object o) {  //add
             list.add(o);
         }
+
         public int size() {   //size
             return list.size();
         }
+
         @Override
         public void run() {
             MyContainerVolatile mcv = new MyContainerVolatile();
@@ -96,14 +103,17 @@ public class VolatileLoader {
     /**
      * wait会释放锁，notify则不会。t1中notify唤醒t2，本线程不会释放锁，会一直执行下去直至被wait或synchronized代码块结束
      */
-    public static class MyContainerWaitNotify implements Runnable{
+    public static class MyContainerWaitNotify implements Runnable {
         volatile List list = new ArrayList();
+
         public void add(Object o) {
             list.add(o);
         }
+
         public int size() {
             return list.size();
         }
+
         @Override
         public void run() {
             MyContainerWaitNotify mcwn = new MyContainerWaitNotify();
@@ -146,14 +156,17 @@ public class VolatileLoader {
         }
     }
 
-    public static class MyContainerLatch implements Runnable{
+    public static class MyContainerLatch implements Runnable {
         volatile List list = new ArrayList(); //添加volatile，使t2能够得到通知
+
         public void add(Object o) {
             list.add(o);
         }
+
         public int size() {
             return list.size();
         }
+
         @Override
         public void run() {
             MyContainerLatch mcl = new MyContainerLatch();
@@ -162,7 +175,7 @@ public class VolatileLoader {
                 System.out.print(" *t2启动* ");
                 if (mcl.size() != 5) {
                     try {
-                        latch.await(5000,TimeUnit.MILLISECONDS);  //等待不需要锁定一个对象
+                        latch.await(5000, TimeUnit.MILLISECONDS);  //等待不需要锁定一个对象
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
