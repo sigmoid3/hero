@@ -1,5 +1,7 @@
 package loader;
 
+import jdk.jfr.Description;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -7,9 +9,8 @@ import java.util.concurrent.TimeUnit;
 
 public class VolatileLoader {
 
-    public static class VolatileVisible {
+    public static class VolatileVisible implements Runnable{
         volatile boolean running = true;  //对比一下有无volatile的情况下，整个程序运行结果的区别
-
         void m() {
             System.out.println("m start");
             while (running) {  //死循环。只有running=false时，才能执行后面的语句
@@ -17,8 +18,8 @@ public class VolatileLoader {
             }
             System.out.println("m end");
         }
-
-        public static void main(String[] args) {
+        @Override
+        public void run() {
             VolatileVisible vt = new VolatileVisible();
             new Thread(vt::m, "t1").start();
             try {
@@ -30,25 +31,24 @@ public class VolatileLoader {
         }
     }
 
-
-    public static class VolatileNoAtomic {
+    public static class VolatileNoAtomic implements Runnable{
         volatile int count = 0;
         void m() {
-            for(int i=0; i<10000; i++) {
-                count ++ ;
+            for (int i = 0; i < 10000; i++) {
+                count++;
             }
         }
-        public static void main(String[] args) {
+        @Override
+        public void run() {
             VolatileNoAtomic vna = new VolatileNoAtomic();
             List<Thread> threads = new ArrayList<>();
-            for (int i=0; i<10; i++) {
+            for (int i = 0; i < 10; i++) {
                 threads.add(new Thread(vna::m, "thread" + i));
             }
-            threads.forEach(o->o.start());
-            threads.forEach((o)->{
+            threads.forEach(o -> o.start());
+            threads.forEach((o) -> {
                 try {
-                    //join()方法阻塞调用此方法的线程,直到线程t完成，此线程再继续。通常用于在main()主线程内，等待其它线程完成再结束main()主线程。
-                    o.join(); //相当于在main线程中同步o线程，o执行完了，main线程才有执行的机会
+                    o.join(); //相当于在主线程中同步o线程，o执行完了，main线程才有执行的机会
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -57,8 +57,10 @@ public class VolatileLoader {
         }
     }
 
-    /*给list添加volatile之后，t2能够接到通知，但t2线程的死循环很浪费CPU*/
-    public static class MyContainerVolatile {
+    /**
+     * 给list添加volatile之后，t2能够接到通知，但t2线程的死循环很浪费CPU
+     */
+    public static class MyContainerVolatile implements Runnable {
         volatile List list = new ArrayList();
         public void add(Object o) {  //add
             list.add(o);
@@ -66,11 +68,11 @@ public class VolatileLoader {
         public int size() {   //size
             return list.size();
         }
-
-        public static void main(String[] args) {
+        @Override
+        public void run() {
             MyContainerVolatile mcv = new MyContainerVolatile();
-            new Thread( () -> {  //该线程负责往list里添加
-                for (int i=0; i<10; i++) {
+            new Thread(() -> {  //该线程负责往list里添加
+                for (int i = 0; i < 10; i++) {
                     mcv.add(new Object());
                     System.out.print(" add-" + i);
                     try {
@@ -79,31 +81,31 @@ public class VolatileLoader {
                         e.printStackTrace();
                     }
                 }
-            },"t1").start();
-            new Thread( () -> { //该线程一直监测list的size，直到size=5
-                while(true) {  //一直监测着，很浪费CPU
-                    if(mcv.size() == 5) {  //此处未加同步，仍然可能会出现t1中又一次++为6了，才break
+            }, "t1").start();
+            new Thread(() -> { //该线程一直监测list的size，直到size=5
+                while (true) {  //一直监测着，很浪费CPU
+                    if (mcv.size() == 5) {  //此处未加同步，仍然可能会出现t1中又一次++为6了，才break
                         break;
                     }
                 }
                 System.out.print(" t2结束 ");
-            },"t2").start();
+            }, "t2").start();
         }
     }
 
-    /*wait会释放锁，notify则不会。t1中notify唤醒t2，本线程不会释放锁，会一直执行下去直至被wait或synchronized代码块结束*/
-    public static class MyContainerWaitNotify {
+    /**
+     * wait会释放锁，notify则不会。t1中notify唤醒t2，本线程不会释放锁，会一直执行下去直至被wait或synchronized代码块结束
+     */
+    public static class MyContainerWaitNotify implements Runnable{
         volatile List list = new ArrayList();
-
         public void add(Object o) {
             list.add(o);
         }
-
         public int size() {
             return list.size();
         }
-
-        public static void main(String[] args) {
+        @Override
+        public void run() {
             MyContainerWaitNotify mcwn = new MyContainerWaitNotify();
             final Object lock = new Object();
             new Thread(() -> {
@@ -120,7 +122,6 @@ public class VolatileLoader {
                     lock.notify();  //通知t1继续执行
                 }
             }, "t2").start();
-
             new Thread(() -> {
                 synchronized (lock) {
                     for (int i = 0; i < 10; i++) {
@@ -145,7 +146,7 @@ public class VolatileLoader {
         }
     }
 
-    public static class MyContainerLatch {
+    public static class MyContainerLatch implements Runnable{
         volatile List list = new ArrayList(); //添加volatile，使t2能够得到通知
         public void add(Object o) {
             list.add(o);
@@ -153,31 +154,29 @@ public class VolatileLoader {
         public int size() {
             return list.size();
         }
-
-        public static void main(String[] args) {
+        @Override
+        public void run() {
             MyContainerLatch mcl = new MyContainerLatch();
             CountDownLatch latch = new CountDownLatch(1);  //当1变成0时，门就开了
             new Thread(() -> {
                 System.out.print(" *t2启动* ");
                 if (mcl.size() != 5) {
                     try {
-                        latch.await();  //等待不需要锁定一个对象
-                        //latch.await(5000,TimeUnit.MILLISECONDS); //也可以指定等待时间
+                        latch.await(5000,TimeUnit.MILLISECONDS);  //等待不需要锁定一个对象
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
                 System.out.print(" *t2结束* ");
-            },"t2").start();
+            }, "t2").start();
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            new Thread(()->{
+            new Thread(() -> {
                 System.out.print(" *t1启动* ");
-                for (int i=0; i<10; i++) {
+                for (int i = 0; i < 10; i++) {
                     mcl.add(new Object());
                     System.out.print(" add-" + i);
                     if (mcl.size() == 5) {
@@ -190,9 +189,7 @@ public class VolatileLoader {
                     }
                 }
                 System.out.print(" *t1结束* ");
-
-            },"t1").start();
+            }, "t1").start();
         }
     }
-
 }
