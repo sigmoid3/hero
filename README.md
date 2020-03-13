@@ -1,5 +1,6 @@
 # Play 🔥
 *`./mvnw clean package -Dmaven.test.skip`* [`java 8+`](http://www.oracle.com/technetwork/java/javase/downloads) [`mvnrepository`](http://mvn.hongxi.org)
+<br>Java基础知识（网络、io、高并发），leetcode相关算法
 <br>Java生态研究(**Spring Boot**+ **Redis**+ **Dubbo**+ **RocketMQ**+ **Elasticsearch**)
 <br>*深入研究JUC,Netty,Dubbo,RocketMQ,Kafka的源码*
 - [Spring Boot](https://spring.io/projects/spring-boot) 解放生产力的利器
