@@ -1,20 +1,21 @@
-package utils;
+package algorithm.tree;
+
+import utils.Node;
 
 import java.util.Stack;
 
 /**
- * @Author: sandro
- * @Create: 2019-09-07
+ * @Author: minqian
+ * @Create: 2020/3/21
  * @Description:
  **/
-
-public class BinaryTree {
+public class RecBinaryTree {
 
     public static void printNode(Node<String> node) {
         System.out.print(node.getVal() + "  ");
     }
 
-    public Node<String> init() {
+    public static Node<String> init() {
         Node<String> D = new Node<String>("D", null, null);
         Node<String> H = new Node<String>("H", null, null);
         Node<String> I = new Node<String>("I", null, null);
