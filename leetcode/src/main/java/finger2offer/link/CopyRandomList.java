@@ -1,19 +1,11 @@
 package finger2offer.link;
 
+import utils.RandomListNode;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
-
-class RandomListNode {
-    int label;
-    RandomListNode next = null;
-    RandomListNode random = null;
-
-    RandomListNode(int label) {
-        this.label = label;
-    }
-}
 
 public class CopyRandomList {
     public RandomListNode Clone1(RandomListNode pHead) {

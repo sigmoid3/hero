@@ -1,14 +1,6 @@
 package finger2offer.link;
 
-class ListNode {
-    int val;
-    ListNode next;
-
-    ListNode(int x) {
-        val = x;
-        next = null;
-    }
-}
+import utils.ListNode;
 
 public class IntersectionLinks {
 

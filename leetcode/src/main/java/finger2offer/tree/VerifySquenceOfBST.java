@@ -1,16 +1,10 @@
 package finger2offer.tree;
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-
-    TreeNode(int x) {
-        val = x;
-    }
-}
-
+/**
+ * @author minqian
+ */
 public class VerifySquenceOfBST {
+
     public boolean verifySquenceOfBST(int[] sequence) {
         if (sequence == null || sequence.length == 0) {
             return false;
