@@ -9,15 +9,21 @@ import java.util.concurrent.TimeUnit;
  **/
 public class Main {
     public static void main(String[] args) {
-        Observable observable = new ObservableThread<>(() -> {
+        final TaskLifecycle<String> lifecycle = new TaskLifecycle.EmptyLifecycle<>() {
+            @Override
+            public void onFinish(Thread thread, String result) {
+                System.out.println("The result is " + result);
+            }
+        };
+        Observable observableThread = new ObservableThread<>(lifecycle, () -> {
             try {
-                TimeUnit.SECONDS.sleep(3);
+                TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println(" finished done.");
-            return null;
+            return "Hello Observer";
         });
-        observable.start();
+        observableThread.start();
     }
 }
