@@ -1,5 +1,7 @@
 package finger2offer.tree;
 
+import utils.TreeNode;
+
 public class TreeConvertLink {
 
     TreeNode head = null;
