@@ -1,6 +1,6 @@
-package threads.rwsplit.solution;
+package threads.deadlock.solution;
 
-import threads.rwsplit.Tableware;
+import threads.deadlock.Tableware;
 
 /**
  * @Author: minqian

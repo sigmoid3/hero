@@ -1,4 +1,4 @@
-package threads.rwsplit;
+package threads.deadlock;
 
 /**
  * @Author: minqian
