@@ -1,0 +1,30 @@
+@startuml
+title __Example__ **title**
+actor Foo1
+boundary Foo2
+control Foo3
+box "Internal Box" #Yellow
+entity Foo4
+database Foo5
+end box
+collections Foo6 #green
+
+autonumber "<font color = red> <b> [0]"
+Foo1 -[#blue]> Foo2 : <font color = blue> test \n sequence
+Foo2 -[#green]-> Foo2 : test
+Foo2 -> Foo3 : test
+Foo3 -> Foo4: test 1
+activate Foo4
+Foo4 -> Foo5 : test 2
+activate Foo5
+Foo5 -> Foo6 : test 3
+activate Foo6
+Foo6 -> Foo5 : test 4
+deactivate Foo6
+Foo5 -> Foo4 : test 5
+deactivate Foo5
+Foo4 --> Foo3 : test 6
+deactivate Foo4
+[--> Foo2 : test7
+
+@enduml
