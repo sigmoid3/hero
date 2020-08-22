@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
  **/
 public class Main {
     public static void main(String[] args) {
-        final TaskLifecycle<String> lifecycle = new TaskLifecycle.EmptyLifecycle<>() {
+        final TaskLifecycle<String> lifecycle = new TaskLifecycle.EmptyLifecycle<String>() {
             @Override
             public void onFinish(Thread thread, String result) {
                 System.out.println("The result is " + result);

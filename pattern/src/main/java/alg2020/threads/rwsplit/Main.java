@@ -1,5 +1,9 @@
 package alg2020.threads.rwsplit;
 
+import lombok.Data;
+
+import java.util.Optional;
+
 /**
  * @Author: minqian
  * @Create: 2020/3/28
@@ -9,7 +13,7 @@ public class Main {
     private final static String text = "This is the example for readWriteLock";
 
     public static void main(String[] args) {
-        final ShareData shareData = new ShareData(50);
+       /* final ShareData shareData = new ShareData(50);
         for (int i = 0; i < 2; i++) {
             new Thread(() -> {
                 for (int j = 0; j < text.length(); j++) {
@@ -33,6 +37,16 @@ public class Main {
                     }
                 }
             }).start();
-        }
+        }*/
+    }
+
+    @Data
+    public static class PriceDO {
+        TagDO tagDO;
+    }
+
+    @Data
+    public static class TagDO {
+        String tagType;
     }
 }
