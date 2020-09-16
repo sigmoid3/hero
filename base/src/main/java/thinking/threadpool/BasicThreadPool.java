@@ -66,8 +66,9 @@ public class BasicThreadPool extends Thread implements ThreadPool {
 
     @Override
     public void execute(Runnable runnable) {
-        if (this.isShutdown)
+        if (this.isShutdown) {
             throw new IllegalStateException("The thread pool is destroy");
+        }
         this.runnableQueue.offer(runnable);
     }
 
@@ -98,8 +99,9 @@ public class BasicThreadPool extends Thread implements ThreadPool {
             }
 
             synchronized (this) {
-                if (isShutdown)
+                if (isShutdown) {
                     break;
+                }
                 System.out.println(runnableQueue.size() + "==" + activeCount);
                 if (runnableQueue.size() > 0 && activeCount < coreSize) {
                     for (int i = initSize; i < coreSize; i++) {
@@ -127,7 +129,9 @@ public class BasicThreadPool extends Thread implements ThreadPool {
     @Override
     public void shutdown() {
         synchronized (this) {
-            if (isShutdown) return;
+            if (isShutdown) {
+                return;
+            }
             isShutdown = true;
             threadQueue.forEach(threadTask ->
             {
@@ -140,29 +144,33 @@ public class BasicThreadPool extends Thread implements ThreadPool {
 
     @Override
     public int getInitSize() {
-        if (isShutdown)
+        if (isShutdown) {
             throw new IllegalStateException("The thread pool is destroy");
+        }
         return this.initSize;
     }
 
     @Override
     public int getMaxSize() {
-        if (isShutdown)
+        if (isShutdown) {
             throw new IllegalStateException("The thread pool is destroy");
+        }
         return this.maxSize;
     }
 
     @Override
     public int getCoreSize() {
-        if (isShutdown)
+        if (isShutdown) {
             throw new IllegalStateException("The thread pool is destroy");
+        }
         return this.coreSize;
     }
 
     @Override
     public int getQueueSize() {
-        if (isShutdown)
+        if (isShutdown) {
             throw new IllegalStateException("The thread pool is destroy");
+        }
         return runnableQueue.size();
     }
 
@@ -182,13 +190,13 @@ public class BasicThreadPool extends Thread implements ThreadPool {
 
         private static final AtomicInteger GROUP_COUNTER = new AtomicInteger(1);
 
-        private static final ThreadGroup group = new ThreadGroup("MyThreadPool-" + GROUP_COUNTER.getAndDecrement());
+        private static final ThreadGroup GROUP = new ThreadGroup("MyThreadPool-" + GROUP_COUNTER.getAndDecrement());
 
         private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
         @Override
         public Thread createThread(Runnable runnable) {
-            return new Thread(group, runnable, "thread-pool-" + COUNTER.getAndDecrement());
+            return new Thread(GROUP, runnable, "thread-pool-" + COUNTER.getAndDecrement());
         }
     }
 
