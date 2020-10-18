@@ -22,20 +22,20 @@ public class RepeatStrMatching {
         while (scanner.hasNextLine()) {
             String a = scanner.nextLine();
             String b = scanner.nextLine();
-            int q = b.length() / a.length();
+            int times = b.length() / a.length();
             if (b.length() % a.length() != 0) {
-                q++;
+                times++;
             }
             StringBuilder result = new StringBuilder();
-            for (int i = 0; i < q; i++) {
+            for (int i = 0; i < times; i++) {
                 result.append(a);
             }
             if (result.toString().contains(b)) {
-                System.out.println(q);
+                System.out.println(times);
             }
             result.append(a);
             if (result.toString().contains(b)) {
-                System.out.println(q + 1);
+                System.out.println(times + 1);
             }
             System.out.println(-1);
         }
