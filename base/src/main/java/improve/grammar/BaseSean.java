@@ -51,7 +51,7 @@ public class BaseSean {
      * hash表哦
      */
     public static void hashTableTest() {
-        Hashtable<String,Object> names = new Hashtable<>();
+        Hashtable<String, Object> names = new Hashtable<>();
         names.put("a", 1);
         names.put("b", 2);
         names.put("c", 3);
