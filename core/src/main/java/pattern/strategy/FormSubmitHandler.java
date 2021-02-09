@@ -1,6 +1,7 @@
 package pattern.strategy;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author: minqian
