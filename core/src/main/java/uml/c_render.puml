@@ -1,0 +1,28 @@
+@startuml
+(*) If "是否命中2.0灰度切流" then
+--> [是] "执行新系统TMF2.0扩展点"
+        If "是否命中主图结构化灰度逻辑" then
+        --> "执行行业产品包输出定制图"
+        --> "执行sugar规则插帧"
+        --> "taodetail结构化数据"
+        --> "下发容灾对比后的奥创数据"
+        -->(*)
+        else
+        --> "taodetail普通主图视频数据"
+        --> "下发容灾对比后的奥创数据"
+        -->(*)
+        Endif
+else
+--> "进入老系统共建业务SDK"
+        If "是否命中主图结构化灰度逻辑" then
+        --> "读取diamond插帧配置"
+        --> "malldetailskip结构化数据"
+        --> "下发奥创数据"
+        -->(*)
+        else
+        --> "malldetailskip主图视频数据"
+        --> "下发奥创数据"
+        -->(*)
+        Endif
+Endif
+@enduml
